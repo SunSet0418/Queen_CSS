@@ -1,6 +1,6 @@
-var express = require('express')
-var bodyParser = require('body-parser')
-var mongoose = require('mongoose')
+var express = require('express') //express 모듈 추출
+var bodyParser = require('body-parser') //body-parser 모듈 추출
+var mongoose = require('mongoose') //mongoose 모듈 추출
 var app = express();
 var schema = mongoose.Schema;
 
@@ -8,7 +8,7 @@ app.use(bodyParser.urlencoded({
   extended: true
 }))
 
-mongoose.connect("mongodb://localhost/AnAProject", function(err){
+mongoose.connect("mongodb://localhost/QueenCSS", function(err){
   if(err){
     console.log('MongoDB Error!');
     throw err
@@ -56,7 +56,7 @@ app.listen(3000, function(err){
   }
 })
 
-app.post('/get', function(req, res){
+app.post('/timeline', function(req, res){
   Content.find({
     id: req.param('id')
   }, function(err, result){
@@ -78,7 +78,7 @@ app.post('/get', function(req, res){
   })
 })
 
-app.post('/put', function(req, res){
+app.post('/post', function(req, res){
   var content = new Content({
     id : req.param('id'),
     title : req.param('title'),
@@ -157,12 +157,48 @@ app.post('/register', function(req, res){
           throw err
         }
         else {
-          console.log(req.param('username')+'register!')
+          console.log(req.param('username')+'register')
           res.json({
             success : true,
             message : "register Success!"
           })
         }
+      })
+    }
+  })
+})
+
+app.post('/edit', function(req, res){
+  User.findOne({
+    id : req.param('id')
+  }, function(err, result){
+    if(err){
+      console.log('/edit Error!')
+      throw err
+    }
+    else if(result){
+      User.update({
+        username : req.param('username'),
+        id : req.param('id'),
+        password : req.param('password')
+      }, function(err){
+        if(err){
+          console.log('update Error!')
+          throw err
+        }
+        else {
+          console.log(req.param('username')+' update success!')
+          res.json({
+            success : true,
+            message : "Update Success!"
+          })
+        }
+      })
+    }
+    else {
+      res.json({
+        success : false,
+        message : "Account Not Founded!"
       })
     }
   })
