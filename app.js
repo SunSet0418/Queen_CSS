@@ -14,7 +14,7 @@ mongoose.connect("mongodb://localhost/QueenCSS", function(err){
     throw err
   }
   else{
-    console.log('MongoDB Connected!')
+    console.log('MongoDB Connected! [ Database : QueenCSS ]')
   }
 })
 
@@ -48,7 +48,7 @@ var User = mongoose.model('user',UserSchema);
 
 app.listen(3000, function(err){
   if(err){
-    console.log('Server Error!');
+    console.log('Server Running Error!');
     throw err
   }
   else{
@@ -64,11 +64,11 @@ app.post('/timeline', function(req, res){
       console.log('/get Error!')
       throw err
     }
-    else if(result){
+    else if(result&&result!=""){
       console.log(result)
       res.json(result)
     }
-    else{
+    else if(result == ""){
       console.log('Data not Founded')
       res.json({
         success: false,
@@ -84,7 +84,6 @@ app.post('/post', function(req, res){
     title : req.param('title'),
     content : req.param('content')
   })
-
   content.save(function(err){
     if(err){
       console.log('/put Error!')
@@ -94,6 +93,42 @@ app.post('/post', function(req, res){
       res.json({
         success : true,
         message : 'Post Success!'
+      })
+    }
+  })
+})
+
+app.post('/deletepost', function(req, res){
+  Content.findOne({
+    id : req.param('id'),
+    title : req.param('title')
+  }, function(err, result){
+    if(err){
+      console.log('/deletepost Error!')
+      throw err
+    }
+    else if(result) {
+      console.log(req.param('id')+" 's"+req.param('title')+" Content Delete")
+      Content.remove({
+        id : req.param('id'),
+        title : req.param('title')
+      }, function(err){
+        if(err){
+          console.log('Content remove Error')
+          throw err
+        }
+        else {
+          res.json({
+            success : true,
+            message : "Content Delete Success"
+          })
+        }
+      })
+    }
+    else {
+      res.json({
+        success : false,
+        message : "Content Not Founded"
       })
     }
   })
@@ -179,7 +214,7 @@ app.post('/edit', function(req, res){
     else if(result){
       User.update({
         username : req.param('username'),
-        id : req.param('id'),
+        id : result.id,
         password : req.param('password')
       }, function(err){
         if(err){
@@ -199,6 +234,48 @@ app.post('/edit', function(req, res){
       res.json({
         success : false,
         message : "Account Not Founded!"
+      })
+    }
+  })
+})
+
+app.post('/delete', function(req, res){
+  User.findOne({
+    id : req.param('id')
+  }, function(err, result){
+    if(err){
+      console.log('/delete Error!')
+      throw err
+    }
+    else if(result){
+      if(result.password == req.param('password')){
+        User.remove({
+          id : result.id,
+          password : result.password
+        }, function(err){
+          if(err){
+            console.log('user delete Error!')
+            throw err
+          }
+          else {
+            res.json({
+              success : true,
+              message : "User Delete Success"
+            })
+          }
+        })
+      }
+      else if(result.password != req.param('password')){
+        res.json({
+          success : false,
+          message : "Password Error"
+        })
+      }
+    }
+    else {
+      res.json({
+        success : false,
+        message : "Account Not Founded"
       })
     }
   })
