@@ -4,11 +4,11 @@ var mongoose = require('mongoose') //mongoose 모듈 추출
 var app = express();
 var schema = mongoose.Schema;
 
-app.use(bodyParser.urlencoded({
+app.use(bodyParser.urlencoded({ //미들웨어 선언
   extended: true
 }))
 
-mongoose.connect("mongodb://localhost/QueenCSS", function(err){
+mongoose.connect("mongodb://localhost/QueenCSS", function(err){ //mongdb 연동 (Database name : QueenCSS)
   if(err){
     console.log('MongoDB Error!');
     throw err
@@ -65,6 +65,7 @@ app.post('/timeline', function(req, res){
       throw err
     }
     else if(result&&result!=""){
+      console.log(result.username + ' timeline result')
       console.log(result)
       res.json(result)
     }
@@ -90,6 +91,7 @@ app.post('/post', function(req, res){
       throw err
     }
     else {
+      console.log()
       res.json({
         success : true,
         message : 'Post Success!'
@@ -249,6 +251,7 @@ app.post('/delete', function(req, res){
     }
     else if(result){
       if(result.password == req.param('password')){
+        console.log(result.username + ' Delete Success')
         User.remove({
           id : result.id,
           password : result.password
@@ -266,6 +269,7 @@ app.post('/delete', function(req, res){
         })
       }
       else if(result.password != req.param('password')){
+        console.log('User Delete Password Error!')
         res.json({
           success : false,
           message : "Password Error"
@@ -273,6 +277,7 @@ app.post('/delete', function(req, res){
       }
     }
     else {
+      console.log('User Delete Account Not Founded')
       res.json({
         success : false,
         message : "Account Not Founded"
