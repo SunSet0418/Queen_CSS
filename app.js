@@ -91,7 +91,7 @@ app.post('/post', function(req, res){
       throw err
     }
     else {
-      console.log()
+      console.log(req.param('id')+"'s"+req.param('title')+" content upload success")
       res.json({
         success : true,
         message : 'Post Success!'
@@ -110,7 +110,7 @@ app.post('/deletepost', function(req, res){
       throw err
     }
     else if(result) {
-      console.log(req.param('id')+" 's"+req.param('title')+" Content Delete")
+      console.log(req.param('id')+"'s "+req.param('title')+" Content Delete")
       Content.remove({
         id : req.param('id'),
         title : req.param('title')
@@ -128,6 +128,7 @@ app.post('/deletepost', function(req, res){
       })
     }
     else {
+      console.log('Content Not Founded');
       res.json({
         success : false,
         message : "Content Not Founded"
@@ -146,12 +147,14 @@ app.post('/login', function(req, res){
     }
     else if(result){
       if(req.param('password')==result.password){
+        console.log(result.username + ' Login Success')
         res.json({
           success : true,
           message : "Login Success!"
         })
       }
       else if(req.param('password')!=result.password){
+        console.log(result.username + ' Login Failed (Password Error)')
         res.json({
           success : false,
           message : "Password Error!"
@@ -159,6 +162,7 @@ app.post('/login', function(req, res){
       }
     }
     else {
+      console.log('Login Error (Account Not Founded)')
       res.json({
         success : false,
         message : "Account Error!"
@@ -182,6 +186,7 @@ app.post('/register', function(req, res){
       throw err
     }
     else if(result){
+      console.log('Already register '+result.username)
       res.json({
         success : false,
         message : "Already register"
@@ -233,6 +238,7 @@ app.post('/edit', function(req, res){
       })
     }
     else {
+      console.log('Edit Account Not Founded')
       res.json({
         success : false,
         message : "Account Not Founded!"
