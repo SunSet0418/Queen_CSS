@@ -18,7 +18,7 @@ mongoose.connect("mongodb://localhost/QueenCSS", function(err){ //mongdb 연동 
   }
 })
 
-var ContentSchema = new schema({
+var ContentSchema = new schema({ //타임라인에 올릴 글에대한 양식 (database 저장양식)
   id : {
     type : String
   },
@@ -30,7 +30,7 @@ var ContentSchema = new schema({
   }
 })
 
-var UserSchema = new schema({
+var UserSchema = new schema({ //회원정보 양식 (")
   username : {
     type : String
   },
@@ -42,11 +42,11 @@ var UserSchema = new schema({
   }
 })
 
-var Content = mongoose.model('content', ContentSchema);
+var Content = mongoose.model('content', ContentSchema); // 위에 선언한 양식에 따라서 테이블 생성
 
-var User = mongoose.model('user',UserSchema);
+var User = mongoose.model('user',UserSchema); //
 
-app.listen(3000, function(err){
+app.listen(3000, function(err){ // 서버 connect
   if(err){
     console.log('Server Running Error!');
     throw err
@@ -56,7 +56,7 @@ app.listen(3000, function(err){
   }
 })
 
-app.post('/timeline', function(req, res){
+app.post('/timeline', function(req, res){ // 내가 올린 글을 볼수 있는 타임라인 데이터 불러오기
   Content.find({
     id: req.param('id')
   }, function(err, result){
@@ -79,7 +79,7 @@ app.post('/timeline', function(req, res){
   })
 })
 
-app.post('/post', function(req, res){
+app.post('/post', function(req, res){ // 타임라인에 올릴 글을 작성하고 저장
   var content = new Content({
     id : req.param('id'),
     title : req.param('title'),
@@ -100,7 +100,7 @@ app.post('/post', function(req, res){
   })
 })
 
-app.post('/deletepost', function(req, res){
+app.post('/deletepost', function(req, res){ // 제목과 사용자 아이디를 입력받아 일치하는 글 삭제
   Content.findOne({
     id : req.param('id'),
     title : req.param('title')
@@ -137,7 +137,7 @@ app.post('/deletepost', function(req, res){
   })
 })
 
-app.post('/login', function(req, res){
+app.post('/login', function(req, res){  // REST API를 이용한 json 통신 로그인
   User.findOne({
     id : req.param('id')
   }, function(err, result){
@@ -171,7 +171,7 @@ app.post('/login', function(req, res){
   })
 })
 
-app.post('/register', function(req, res){
+app.post('/register', function(req, res){ // 회원가입
   var user = new User({
     username : req.param('username'),
     id : req.param('id'),
@@ -210,7 +210,7 @@ app.post('/register', function(req, res){
   })
 })
 
-app.post('/edit', function(req, res){
+app.post('/edit', function(req, res){ // 회원 정보 수정
   User.findOne({
     id : req.param('id')
   }, function(err, result){
@@ -247,7 +247,7 @@ app.post('/edit', function(req, res){
   })
 })
 
-app.post('/delete', function(req, res){
+app.post('/delete', function(req, res){ // 회원탈퇴
   User.findOne({
     id : req.param('id')
   }, function(err, result){
